@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Customer CRUD</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/user.png">
+    <link rel="website icon" type="image/x-icon" href="/user.png">
     <!-- CSS only -->
     <!-- https://getbootstrap.com/ -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
@@ -18,40 +18,74 @@
     <!-- FONT ICONS only --> {{-- https://fontawesome.com/icons/user-pen?s=solid&f=classic --}}
     <!-- FONT LIBRARY --> {{-- https://cdnjs.com/libraries/font-awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <!-- Bootbox library -->
+    {{-- https://cdnjs.com/libraries/bootbox.js/5.5.2 --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js" integrity="sha512-RdSPYh1WA6BF0RhpisYJVYkOyTzK4HwofJ3Q7ivt/jkpW6Vc8AurL1R+4AUcvn9IwEKAPm/fk7qFZW3OuiUDeg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-    <div class="container">
-       <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">Add</button>
-  
-   {{-- <a href="{{Auth::logout()}}">Logout</a> --}}
- <div id="ctable" class="table-responsive">
- <table class="table table-striped table-hover">
-     <thead>
-       <tr>
-         <th>Customer ID</th>
-         <th>Title</th>
-         <th>Lname</th>
-         <th>Fname</th>
-         <th>Address</th>
-         <th>Phone</th>
-         <th>Edit</th>
-         <th>Delete</th>
-         <th>Restore</th>
-         </tr>
-     </thead>
-     <tbody id="cbody">
-      </tbody>
-   </table>
- </div>
- </div>
-<!-- Modal -->
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    .btn-lg{
+        display: inline-block;
+        text-transform: none;
+        letter-spacing: normal;
+        word-wrap: normal;
+        white-space: nowrap;
+        -webkit-transition:all 0.5s ease-in-out;
+    }
+    
+    .btn-marie:hover{
+      background: #FFE9A0;
+      color: #367E18;
+    }
+    .btn-marie{
+      margin: 10px;
+      border-radius: 25px 25px 25px 25px;
+      background-color: black;
+      color: #ffffff;
+      /* box-shadow: 0 0 0 1px rgb(16,114,181); */
+    }
+  </style>
+
+    <div class="container" id="customers">
+        <button type="button" class="btn btn-marie btn-lg" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa-solid fa-user"></i> <span
+                class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+        
+        <button type="button" class="btn btn-marie btn-lg" id="item"><i class="fa-sharp fa-solid fa-bag-shopping"></i><span class="glyphicon glyphicon-plus"
+                aria-hidden="true"></span></button>
+        
+
+        <div class="table-responsive">
+            <table id="ctable" class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Title</th>
+                        <th>Lname</th>
+                        <th>Fname</th>
+                        <th>Address</th>
+                        <th>Phone</th>
+                        <th>Creditlimit</th>
+                        <th>Level</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                        <th>Restore</th>
+                    </tr>
+                </thead>
+                <tbody id="cbody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Modal -->
 <div class="modal fade" id="myModal" role="dialog" style="display:none">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add New Customer</h5>
+          <h5 Add class="modal-title" id="exampleModalLabel">Add New Customer</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -93,26 +127,165 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="creditlimit" class="control-label">creditlimit</label>
+                    <label for="creditlimit" class="control-label">Creditlimit</label>
                     <input type="text" class="form-control" id="creditlimit" name="creditlimit" >
                 </div>
 
                 <div class="form-group">
-                    <label for="level" class="control-label">level</label>
+                    <label for="level" class="control-label">Level</label>
                     <input type="text" class="form-control" id="level" name="level" >
                 </div>
             </form>
-
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button id="myFormSubmit" type="submit" class="btn btn-primary">Save</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button id="myFormSubmit" type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
         </div>
+    </div>
+    
+    <div class="modal fade" id="editModal" role="dialog" style="display:none">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+              <h4 class="modal-title">Update customer</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateform" method="#" action="#" >
+                <input type="hidden">
+              <div class="form-group">
+                <label for="etitle" class="control-label">Title</label>
+                <input type="text" class="form-control" id="etitle" name="title"  >
 
+              </div> 
+              <div class="form-group"> 
+                <label for="elname" class="control-label">last name</label>
+                <input type="text" class="form-control " id="elname" name="lname">
+
+              </div> 
+              <div class="form-group"> 
+                <label for="efname" class="control-label">First Name</label>
+                <input type="text" class="form-control " id="efname" name="fname" >
+                
+              </div>
+              <div class="form-group"> 
+                <label for="eaddress" class="control-label">Address</label>
+                <input type="text" class="form-control" id="eaddress" name="addressline" >
+
+              </div>
+              <div class="form-group"> 
+                <label for="etown" class="control-label">Town</label>
+                <input type="text" class="form-control" id="etown" name="town" >
+                
+              </div>
+              <div class="form-group"> 
+                <label for="ezipcode" class="control-label">Zip code</label>
+                <input type="text" class="form-control" id="ezipcode" name="zipcode" >
+
+              </div>
+              <div class="form-group"> 
+                <label for="ephone" class="control-label">Phone</label>
+                <input type="text" class="form-control" id="ephone" name="phone" >
+              </div>
+
+              <div class="form-group"> 
+                <label for="ecreditlimit" class="control-label">Creditlimit</label>
+                <input type="text" class="form-control" id="ecreditlimit" name="creditlimit" >
+              </div>
+
+              <div class="form-group"> 
+                <label for="elevel" class="control-label">Level</label>
+                <input type="text" class="form-control" id="elevel" name="level" >
+              </div>
+
+            </form> 
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+              <button id="updatebtn" type="submit" class="btn btn-primary">Update</button>
+            </div>
+          </div>
       </div>
     </div>
+
+
+    <div id="items" class="container">
+      <button type="button" class="btn btn-info btn-lg" data-bs-toggle="modal" data-bs-target="#itemModal"><i class="fa-sharp fa-solid fa-bag-shopping"></i> Add item<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+      <button type="button" class="btn btn-info btn-lg" id="customerbtn"><i class="fa-solid fa-user"></i> View customer tab<span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+      
+      <div class="table-responsive">
+          <table id="itable" class="table table-striped table-hover">
+              <thead>
+                  <tr>
+                      <th>Item ID</th>
+                      <th>Description</th>
+                      <th>Sell price</th>
+                      <th>Cost price</th>
+                      <th>Title</th>
+                      <th>Image</th>
+                      <th>Edit</th>
+                      <th>Delete</th>
+                      <th>Restore</th>
+                  </tr>
+              </thead>
+              <tbody id="ibody">
+              </tbody>
+          </table>
+      </div>
+  </div>
+  
+  <div class="modal fade" id="itemModal" role="dialog" style="display:none">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Add new item</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+  
+              <div class="modal-body">
+                  <form id="updateform" action="#">
+                      <div class="form-group">
+                          <label for="title" class="control-label">Description</label>
+                          <input type="text" class="form-control" id="description" name="description">
+                      </div>
+                      <div class="form-group">
+                          <label for="title" class="control-label">CostPrice</label>
+                          <input type="text" class="form-control" id="cost_price" name="cost_price">
+                      </div>
+                      <div class="form-group">
+                          <label for="lname" class="control-label">SellPrice</label>
+                          <input type="text" class="form-control " id="sell_price" name="sell_price">
+                      </div>
+                      <div class="form-group">
+                          <label for="fname" class="control-label">Title</label>
+                          <input type="text" class="form-control " id="title" name="title">
+                      </div>
+                      <div class="form-group">
+                          <label for="image" class="control-label">Image</label>
+                          <input type="file" class="form-control" id="img_path" name="img_path">
+                      </div>
+                  </form>
+              </div>
+              
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                  <button id="updatebtn" type="submit" class="btn btn-primary">Save</button>
+              </div>
+          </div>
+      </div>
   </div>
 
- <script src="js/custom.js"></script>
+
+
+
+
+
+
+
+
+    <script src="js/custom.js"></script>
 </body>
+
 </html>
