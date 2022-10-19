@@ -19,3 +19,10 @@ Route::get('/', function () {
 
 Route::resource('customer', 'CustomerController');
 Route::resource('item', 'ItemController');
+
+// Route::get('getItems', 'ItemController@getItem');
+
+Route::get('/getItems', [
+    'uses' => 'ItemController@getItem',
+    'as' => 'getItems'
+    ]);

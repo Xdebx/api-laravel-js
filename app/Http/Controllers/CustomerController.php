@@ -54,7 +54,7 @@ class CustomerController extends Controller
      */
     public function show(Request $request){
         // if ($request->ajax()){
-            $customers = Customer::orderBy('lname','DESC')->get();
+            $customers = Customer::orderBy('customer_id','DESC')->get();
             return response()->json($customers);
          }
     /**

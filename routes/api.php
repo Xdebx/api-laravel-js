@@ -22,3 +22,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Route::get('/customer/all',['uses' => 'CustomerController@getCustomerAll','as' => 'customer.getcustomerall'] );
 Route::resource('customer', 'CustomerController');
 Route::resource('item', 'ItemController');
+
+// Route::get('getItems', 'ItemController@getItem');
+Route::get('/getItems', [
+    'uses' => 'ItemController@getItem',
+    'as' => 'getItems'
+    ]);
