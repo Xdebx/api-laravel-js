@@ -27,10 +27,11 @@ $(document).ready(function () {
             {data: null,
                 render: function (data, type, row) {
                     return "<a href='#' data-bs-toggle='modal' data-bs-target='#editItemModal' id='editbtn' data-id=" +
-                        data.item_id + "><i class='fa-solid fa-pen' aria-hidden='true' style='font-size:24px' ></i></a>  <a href='#' class='deletebtn' data-id=" + data.item_id + "><i class='fa-regular fa-trash-can' style='font-size:24px; color:red'></a></i>";
+                        data.item_id + "><i class='fa-solid fa-pen-to-square' aria-hidden='true' style='font-size:24px' ></i></a>  <a href='#' class='deletebtn' data-id=" + data.item_id + "><i class='fa-sharp fa-solid fa-trash' style='font-size:24px; color:red'></a></i>";
                 },
             },
         ]
+        
     })//end datatables
     $("#itemSubmit").on("click", function (e) {
         e.preventDefault();
