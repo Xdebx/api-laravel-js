@@ -23,99 +23,100 @@ $(document).ready(function () {
             {data: 'sell_price'},
             {data: 'cost_price'},
             {data: 'title'},
-            {data: 'img_path'},
+            {data: null,
+                render: function (data,type,JsonResultRow,row) {
+                    return '<img src="/storage/' + JsonResultRow.img_path + '" width="100px" height="100px">';
+                },
+            },
             {data: null,
                 render: function (data, type, row) {
-                    return "<a href='#' data-bs-toggle='modal' data-bs-target='#editItemModal' id='editbtn' data-id=" +
-                        data.item_id + "><i class='fa-solid fa-pen-to-square' aria-hidden='true' style='font-size:24px' ></i></a>  <a href='#' class='deletebtn' data-id=" + data.item_id + "><i class='fa-sharp fa-solid fa-trash' style='font-size:24px; color:red'></a></i>";
+                    return "<a href='#' class='editBtn id='editbtn' data-id=" +
+                        data.item_id + "><i class='fa-solid fa-pen-to-square' aria-hidden='true' style='font-size:40px' ></i></a>";
+                },
+            },
+            {data: null,
+                render: function (data, type, row) {
+                    return "<a href='#' class='deletebtn' data-id=" + data.item_id + "><i class='fa-sharp fa-solid fa-trash' style='font-size:40px; color:red'></a></i>";
                 },
             },
         ]
         
     })//end datatables
+
     $("#itemSubmit").on("click", function (e) {
         e.preventDefault();
-        var data = $("#iform").serialize();
+        // var data = $("#iform").serialize();
+        var data = $('#iform')[0];
         console.log(data);
+        let formData = new FormData(data);
+
+        console.log(formData);
+        for (var pair of formData.entries()) {
+            console.log(pair[0] + ', ' + pair[1]);
+        }
+
         $.ajax({
             type: "post",
             url: "/api/item",
-            data: data,
+            data: formData,
+            contentType: false,
+            processData: false,
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            dataType:"json", 
+
+            success:function(data){
+                   console.log(data);
+                   $("#itemModal").modal("hide");
+
+                   var $itable = $('#itable').DataTable();
+                   $itable.row.add(data.item).draw(false); 
+            },
+
+            error:function (error){
+                console.log(error);
+            }
+        })
+    });
+
+    $("#itable tbody").on("click", "a.editBtn", function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        $('#editItemModal').modal('show');
+
+
+        $.ajax({
+            type: "GET",
+            url: "api/item/" + id + "/edit",
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             dataType: "json",
-            success: function (data) { 
-                console.log(data);
-                //$("myModal").modal("hide");
-                $('#itemModal').each(function(){
-                    window.location.reload();
-                    $(this).modal('hide'); });
-                //$.each(data, function(key, value){
-                    //console.log(value);
-                var tr = $("<tr>");
-                tr.append($("<td>").html(data.item_id));
-                tr.append($("<td>").html(data.description));
-                tr.append($("<td>").html(data.cost_price));
-                tr.append($("<td>").html(data.sell_price));
-                tr.append($("<td>").html(data.title));
-                tr.append($("<td>").html(data.img_path));
-                tr.append("<td><a href='#' data-bs-toggle='modal' data-bs-target='#editItemModal' id='editbtnitem' data-id=" + id + "><i class='fa fa-pencil' aria-hidden='true' style='font-size:24px' ></a></i></td>"
-                );
-
-                tr.append("<td><a href='#'  class='deletebtn' data-id="+ id + "><i  class='fa-solid fa-trash-can' style='font-size:24px; color:red' ></a></i></td>");
-                tr.append("<td><a href=" + "/customer/" + id + "/restore" + "><i class='fa fa-undo' aria-hidden='true' style='font-size:24px' ></a></i></td>" );
-                $("#ibody").prepend(tr);
-                
-            },
-            error: function (error) {
-                console.log(error);
-            },
-            
-        });
-    });
-
-
-    $('#editItemModal').on('show.bs.modal', function(e) {
-        var id = $(e.relatedTarget).attr('data-id');
-        // console.log(id);
-        $('<input>')
-        .attr({
-            type: 'hidden', 
-            id:'itemid',
-            name: 'item_id',
-            value: id
-        })
-        .appendTo('#updateformItem');
-        
-        $.ajax({
-            type: "GET",
-            url: "api/item/" + id + "/edit",
             success: function(data){
-                //    console.log(data);
+                   console.log(data);
+                   $("#eeitem_id").val(data.item_id);
                    $("#eedescription").val(data.description);
                    $("#eecost_price").val(data.cost_price);
                    $("#eesell_price").val(data.sell_price);
                    $("#eetitle").val(data.title);
                    $("#eeimagePath").val(data.img_path);
-
                 },
                 error: function(){
                     console.log('AJAX load did not work');
                     alert("error");
                 }
             });
-        });
-
-        $('#editItemModal').on('hidden.bs.modal', function (e) {
-            $("#updateformItem").trigger("reset");
-            $("#itemid").remove();
-    });
+        });//end edit fetch
         
         $("#updatebtnItem").on('click', function(e) {
-            var id = $('#itemid').val();
-            var data = $("#updateformItem").serialize();
+            e.preventDefault();
+            var id = $('#eeitem_id').val();
+            //var data = $("#updateItemform").serialize();
             console.log(data);
+
+            var table =$('#itable').DataTable();
+            var cRow = $("tr td:contains(" + id + ")").closest('tr');
+            var data =$("#ayform").serialize();
+
             $.ajax({
                 type: "PUT",
                 url: "api/item/"+ id,
@@ -124,63 +125,64 @@ $(document).ready(function () {
                 dataType: "json",
                 success: function(data) {
                     console.log(data);
+                    // $('#editItemModal').each(function(){
+                    //         $(this).modal('hide'); });
 
-                    $("#editItemModal").css('backgroundColor','hsl(143, 100%, 50%)').each(function () {
-                        $(this).modal("hide");
-                        window.location.reload();
-                    });
+                    $('#editItemModal').modal("hide");
+                    table.row(cRow).data(data).invalidate().draw(false);
                 },
                 error: function(error) {
                     console.log(error);
                 }
             });
-        });
+        });//end update
 
-
-    $("#ibody").on("click", ".deletebtn", function (e) {
-        var id = $(this).data("id");
-        var $tr = $(this).closest("tr");
-        // var id = $(e.relatedTarget).attr('id');
-        console.log(id);
-        e.preventDefault();
-        bootbox.confirm({
-            message: "Do you want to delete this item",
-            buttons: {
-                confirm: {
-                    label: "Yes",
-                    className: "btn-success",
+        $("#itable tbody").on("click", "a.deletebtn", function (e) {
+            var table = $('#itable').DataTable();
+            var id = $(this).data('id');
+            var $row = $(this).closest('tr');
+            console.log(id);
+    
+            e.preventDefault();
+            bootbox.confirm({
+                message: "Do you want to delete this item",
+                buttons: {
+                    confirm: {
+                        label: "Yes",
+                        className: "btn-success",
+                    },
+                    cancel: {
+                        label: "No",
+                        className: "btn-danger",
+                    },
                 },
-                cancel: {
-                    label: "No",
-                    className: "btn-danger",
+                callback: function (result) {
+                    if (result)
+                        $.ajax({
+                            type: "DELETE",
+                            url: "/api/item/" + id,
+                            headers: {
+                                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                                    "content"
+                                ),
+                            },
+                            dataType: "json",
+                            success: function (data) {
+                                console.log(data);
+                                // bootbox.alert('success');
+                                // $tr.find("td").fadeOut(2000, function () {
+                                //     $tr.remove();
+                                $row.fadeOut(4000, function(){
+                                    table.row($row).remove().draw(false)
+                                });
+                                bootbox.alert(data.success)
+                               
+                            },
+                            error: function (error) {
+                                console.log(error);
+                            },
+                        });
                 },
-            },
-            callback: function (result) {
-                if (result)
-                    $.ajax({
-                        type: "DELETE",
-                        url: "/api/item/" + id,
-                        headers: {
-                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                                "content"
-                            ),
-                        },
-                        dataType: "json",
-                        success: function (data) {
-                            console.log(data);
-                            
-                            $tr.find("td").css('backgroundColor','hsl(0,100%,50%').fadeOut(2000, function () {
-                                $tr.remove();
-                            });
-                            
-                            
-                        },
-                        error: function (error) {
-                            console.log(error);
-                        },
-                    });
-            },
-        });
-    });
-
+            });
+        });//DELETE
 }); //Document.ready end

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use View;
+use Storage;
 
 class ItemController extends Controller
 {
@@ -44,21 +45,9 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        $items = Item::create($request->all());
-        return response()->json($items);
+        // $items = Item::create($request->all());
+        // return response()->json($items);
 
-            // $input = $request->all();
-
-            // if($file = $request->hasFile('image')) 
-            // {
-            // $file = $request->file('image') ;
-            // $fileName = uniqid().'_'.$file->getClientOriginalName();
-            // $destinationPath = public_path().'/images';
-            // $input['img_path'] = $fileName;
-            // $file->move($destinationPath,$fileName);
-            // }
-            // $items = Item::create($input);
-            // return response()->json(["success" => "Image successfully.","status" => 200]);
 
                 // $path = 'public/';
                 // $file = $request->file('img_path');
@@ -81,6 +70,19 @@ class ItemController extends Controller
        
         // Item::create($request->all());
         // return response()->json(["success" => "Image successfully.","status" => 200]);
+
+        $item = new Item;
+        $item->description = $request->description;
+        $item->cost_price= $request->cost_price;
+        $item->sell_price = $request->sell_price;
+        $item->title = $request->title;
+
+        $files = $request->file('uploads');
+        $item->img_path = 'images/'.$files->getClientOriginalName();
+        // $item->img_path = uniqid().'_'.$files->getClientOriginalName();
+        $item->save();
+        Storage::put('/public/images'.$files->getClientOriginalName(),file_get_contents($files));
+        return response()->json(["success" => "Item created successfully.","item" => $item ,"status" => 200]);
 
     }
     /**
@@ -117,6 +119,7 @@ class ItemController extends Controller
     {
         $items = Item::find($id);
         $items = $items->update($request->all());
+        $items = Item::find($id);
         return response()->json($items);
     }
 
