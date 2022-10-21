@@ -119,7 +119,8 @@ $(document).ready(function () {
 
             $.ajax({
                 type: "PUT",
-                url: "api/item/"+ id,
+                // url: "api/item/"+ id,
+                url: `api/item/${id}`,
                 data: data,
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                 dataType: "json",
