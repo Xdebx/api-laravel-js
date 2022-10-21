@@ -79,9 +79,9 @@ class ItemController extends Controller
 
         $files = $request->file('uploads');
         $item->img_path = 'images/'.$files->getClientOriginalName();
-        // $item->img_path = uniqid().'_'.$files->getClientOriginalName();
+        // $item->img_path = uniqid().'images/'.$files->getClientOriginalName();
         $item->save();
-        Storage::put('/public/images'.$files->getClientOriginalName(),file_get_contents($files));
+        Storage::put('/public/images/'.$files->getClientOriginalName(),file_get_contents($files));
         return response()->json(["success" => "Item created successfully.","item" => $item ,"status" => 200]);
 
     }
