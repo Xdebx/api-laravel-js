@@ -7,6 +7,7 @@ $(document).ready(function () {
         dom:'Bfrtip',
         buttons:[
             'pdf',
+            
             'excel',
             {
                 text:'Add item',
@@ -15,7 +16,7 @@ $(document).ready(function () {
                     $("#iform").trigger("reset");
                     $('#itemModal').modal('show');
                 }
-            }
+            },
         ],
         columns:[
             {data: 'item_id'},
@@ -23,10 +24,17 @@ $(document).ready(function () {
             {data: 'sell_price'},
             {data: 'cost_price'},
             {data: 'title'},
-            {data: null,
-                render: function (data,type,JsonResultRow,row) {
-                    return '<img src="/storage/' + JsonResultRow.img_path + '" width="100px" height="100px">';
-                },
+            // {data: null,
+            //     render: function (data,type,JsonResultRow,row) {
+            //         return '<img src="/storage/' + JsonResultRow.img_path + '" width="100px" height="100px">';
+            //     },
+            // },
+            {
+                data: null,
+                render: function (data, type, row) {
+                    console.log(data.img_path)
+                    return '<img src= "/storage/$(data.img_path)" height="100px" width="100px">';
+                }  
             },
             {data: null,
                 render: function (data, type, row) {
@@ -40,9 +48,7 @@ $(document).ready(function () {
                 },
             },
         ]
-        
     })//end datatables
-
     $("#itemSubmit").on("click", function (e) {
         e.preventDefault();
         // var data = $("#iform").serialize();

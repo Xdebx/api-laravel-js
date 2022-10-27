@@ -22,7 +22,7 @@ class CustomerController extends Controller
         // if ($request->ajax()){
             $customers = Customer::orderBy('customer_id','DESC')->get();
             return response()->json($customers);
-         }
+}
 
     /**
      * Show the form for creating a new resource.

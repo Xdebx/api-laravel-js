@@ -5,7 +5,7 @@ $(document).ready(function () {
         // $("#customers").hide("slow");
         $("#customers").hide();
         $("#items").show();
-
+        
         $.ajax({
             type: "GET",
             url: "/api/item",

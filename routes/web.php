@@ -28,3 +28,4 @@ Route::resource('item', 'ItemController');
 //     ]);
 
 Route::view('/item-index', 'item.index');
+Route::view('/shop', 'shop.index');
